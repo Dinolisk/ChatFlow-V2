@@ -1,0 +1,59 @@
+/* Chat Page Styles */
+.chat-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center the content horizontally */
+}
+
+/* Center the Chat Title */
+.chat-page h2 {
+  text-align: center;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+/* Messages Container */
+.messages-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end; /* Align messages to the right */
+  width: 100%;  /* Ensure messages take up full width */
+  max-width: 600px; /* Optional: limit the width */
+  padding-right: 20px;
+  margin-bottom: 20px;
+}
+
+/* Individual message styling */
+.message {
+  background-color: #f1f1f1;
+  padding: 10px;
+  margin: 5px 0;
+  border-radius: 5px;
+  width: 80%;  /* Ensure messages take up 80% of the width */
+  text-align: right; /* Align text to the right */
+}
+
+/* Form for sending new messages */
+.chat-page form {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  width: 100%;
+  max-width: 600px;
+}
+
+
+form input {
+  width: 80%;  /* Adjust input field width */
+  padding: 10px;
+  margin-right: 10px;
+}
+
+form button {
+  padding: 10px 20px;
+  background-color: #6c63ff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}

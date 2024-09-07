@@ -1,0 +1,17 @@
+.form-container {
+    max-width: 500px;
+    margin: 0 auto; /* Centers the container horizontally */
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: white;
+}
+
+.form-control {
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    box-sizing: border-box; /* Ensures padding and borders are included in width */
+}
