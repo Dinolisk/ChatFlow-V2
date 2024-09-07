@@ -10,7 +10,10 @@ function Register() {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
-  const handleRegister = async () => {
+  const handleRegister = async (e) => {
+    e.preventDefault(); // Prevent the default form submission
+
+    // Check if passwords match before making the API request
     if (password !== confirmPassword) {
       setError('Passwords do not match');
       return;
@@ -37,49 +40,56 @@ function Register() {
   };
 
   return (
-    <div className="page-container register-page"> {/* Scoped class to apply register-specific CSS */}
+    <div className="page-container register-page">
       <div className="form-container">
-        <h2>Register</h2>
-        <div className="form-group">
-          <input
-            type="text"
-            placeholder="Username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            className="form-control"
-          />
-        </div>
-        <div className="form-group">
-          <input
-            type="email"
-            placeholder="Enter email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="form-control"
-          />
-        </div>
-        <div className="form-group">
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="form-control"
-          />
-        </div>
-        <div className="form-group">
-          <input
-            type="password"
-            placeholder="Confirm Password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            className="form-control"
-          />
-        </div>
+        <h2>Register ChatFlow</h2>
         {error && <p style={{ color: 'red' }}>{error}</p>}
-        <button onClick={handleRegister} className="shared-btn">Register</button>
+        <form onSubmit={handleRegister}>
+          <div className="form-group">
+            <input
+              type="text"
+              placeholder="Username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              className="form-control"
+              required // Ensures the username field is required
+            />
+          </div>
+          <div className="form-group">
+            <input
+              type="email"
+              placeholder="Enter email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="form-control"
+              required // Ensures the email field is required
+            />
+          </div>
+          <div className="form-group">
+            <input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="form-control"
+              required // Ensures the password field is required
+              minLength="6" // Minimum password length of 6 characters
+            />
+          </div>
+          <div className="form-group">
+            <input
+              type="password"
+              placeholder="Confirm Password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              className="form-control"
+              required // Ensures the confirm password field is required
+            />
+          </div>
+          <button type="submit" className="shared-btn">Register</button>
+        </form>
         <p>
-          Already have an account? <Link to="/login">Log In</Link> {}
+          Already have an account? <Link to="/login">Log In</Link>
         </p>
       </div>
     </div>
