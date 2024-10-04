@@ -1,39 +1,84 @@
-/* Chat Page Styles */
 .chat-page {
   display: flex;
   flex-direction: column;
-  align-items: center; /* Center the content horizontally */
+  align-items: center; 
 }
 
-/* Center the Chat Title */
 .chat-page h2 {
   text-align: center;
   width: 100%;
   margin-bottom: 20px;
 }
 
-/* Messages Container */
 .messages-container {
   display: flex;
   flex-direction: column;
-  align-items: flex-end; /* Align messages to the right */
-  width: 100%;  /* Ensure messages take up full width */
-  max-width: 600px; /* Optional: limit the width */
-  padding-right: 20px;
+  align-items: center;
+  width: 100%;
+  max-width: 600px;
   margin-bottom: 20px;
 }
 
-/* Individual message styling */
-.message {
+.user-message {
+  background-color: #d1ffd1;
+  padding: 10px;
+  margin: 5px 0;
+  border-radius: 5px;
+  width: 80%; 
+  margin-left: 60px;
+  align-self: flex-end;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  text-align: right;
+  box-sizing: border-box;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  word-break: break-all;
+  max-width: 100%;
+  position: relative;
+}
+
+.patrik-message {
   background-color: #f1f1f1;
   padding: 10px;
   margin: 5px 0;
   border-radius: 5px;
-  width: 80%;  /* Ensure messages take up 80% of the width */
-  text-align: right; /* Align text to the right */
+  width: 80%; 
+  margin-right: 60px;
+  align-self: flex-start;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  box-sizing: border-box;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  word-break: break-all;
+  max-width: 100%;
+  position: relative;
 }
 
-/* Form for sending new messages */
+.message img {
+  width: 50px;   
+  height: 50px;  
+  border-radius: 50%;  
+  margin-bottom: 10px;
+}
+
+.message button {
+  background-color: red;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+  position: absolute;
+  right: -80px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
 .chat-page form {
   display: flex;
   flex-direction: row;
@@ -42,9 +87,8 @@
   max-width: 600px;
 }
 
-
 form input {
-  width: 80%;  /* Adjust input field width */
+  width: 80%;
   padding: 10px;
   margin-right: 10px;
 }

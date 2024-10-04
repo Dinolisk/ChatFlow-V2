@@ -10,9 +10,10 @@ import './global.css'; // Import your global styles
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  // Check for token in localStorage on initial render
+  // Kontrollera token i localStorage vid sidladdning
   useEffect(() => {
     const token = localStorage.getItem('authToken');
+    // Kontrollera om token finns och om den är giltig
     if (token) {
       setIsAuthenticated(true);
     } else {
@@ -20,42 +21,45 @@ function App() {
     }
   }, []);
 
-  // Function to handle logout
+  // Hantera utloggning och rensa all användardata
   const handleLogout = () => {
     localStorage.removeItem('authToken');
+    localStorage.removeItem('username');
+    localStorage.removeItem('userId');
+    localStorage.removeItem('avatar');
     setIsAuthenticated(false);
+    window.location.href = '/login';  // Omdirigera till inloggningssidan efter utloggning
   };
 
   return (
     <Router>
       <div className="App">
-        {/* Add Header on all pages */}
+        {/* Lägg till Header på alla sidor */}
         <Header isAuthenticated={isAuthenticated} handleLogout={handleLogout} />
 
-
         <Routes>
-          {/* Home Route: Accessible to all */}
+          {/* Hem-sida: Tillgänglig för alla */}
           <Route path="/" element={<Home />} />
 
-          {/* Registration Page */}
+          {/* Registrering */}
           <Route
             path="/register"
             element={!isAuthenticated ? <Register /> : <Navigate to="/chat" />}
           />
 
-          {/* Login Page */}
+          {/* Inloggning */}
           <Route
             path="/login"
             element={!isAuthenticated ? <Login setIsAuthenticated={setIsAuthenticated} /> : <Navigate to="/chat" />}
           />
 
-          {/* Protected Chat Page */}
+          {/* Skyddad chat-sida */}
           <Route
             path="/chat"
-            element={isAuthenticated ? <Chat setIsAuthenticated={setIsAuthenticated} /> : <Navigate to="/login" />}
+            element={isAuthenticated ? <Chat /> : <Navigate to="/login" />}
           />
 
-          {/* Redirect any unknown routes to Home */}
+          {/* Omdirigera okända routes till Hem */}
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </div>
