@@ -8,7 +8,7 @@ const Chat = ({ conversationId = 'mock-conversation-id' }) => {
   const [username, setUsername] = useState('');
   const [avatar, setAvatar] = useState('');
 
-  // Lista med olika fraser som Patrik kan svara med
+  // Lista med olika fraser för fejkade chatten
   const fakeChatReplies = [
     "Tja tja, hur mår du?",
     "Hallå!! Svara då!!",
@@ -22,20 +22,18 @@ const Chat = ({ conversationId = 'mock-conversation-id' }) => {
     "Har du några roliga planer till helgen?"
   ];
 
-  // Funktion för att välja ett slumpmässigt svar från Patrik
   const getRandomReply = () => {
     return fakeChatReplies[Math.floor(Math.random() * fakeChatReplies.length)];
   };
 
   useEffect(() => {
-    // Hämta användarnamn och avatar från localStorage
     const savedUsername = localStorage.getItem('username');
     const savedAvatar = localStorage.getItem('avatar');
     
     setUsername(savedUsername || 'användare');
     setAvatar(savedAvatar || 'https://i.pravatar.cc/100');
 
-    // Hämta meddelanden från servern vid inloggning
+    // Hämtar meddelanden från servern vid inloggning
     const fetchMessages = async () => {
       try {
         const response = await fetch('https://chatify-api.up.railway.app/messages', {
@@ -47,7 +45,7 @@ const Chat = ({ conversationId = 'mock-conversation-id' }) => {
 
         if (response.ok) {
           const data = await response.json();
-          setMessages(data);  // Sätt alla meddelanden från servern
+          setMessages(data); 
         } else {
           console.error('Failed to fetch messages:', response.status);
         }
@@ -59,20 +57,21 @@ const Chat = ({ conversationId = 'mock-conversation-id' }) => {
     fetchMessages();
   }, [conversationId]);
 
+// Funktion för att skicka ett nytt meddelande till servern och uppdatera meddelandelistan.
   const handleSendMessage = async (e) => {
     e.preventDefault();
     const sanitizedMessage = DOMPurify.sanitize(newMessage);
-
+  
     if (!sanitizedMessage.trim()) {
       alert('Message cannot be empty.');
       return;
     }
-
+  
     const payload = {
       text: sanitizedMessage,
       ...(conversationId && conversationId !== 'mock-conversation-id' && { conversationId }),
     };
-
+  
     try {
       const response = await fetch('https://chatify-api.up.railway.app/messages', {
         method: 'POST',
@@ -82,34 +81,32 @@ const Chat = ({ conversationId = 'mock-conversation-id' }) => {
         },
         body: JSON.stringify(payload),
       });
-
+  
       if (response.ok) {
         const newMessageData = await response.json();
         
-        // Här hämtar vi avatar och username från localStorage igen
         const savedAvatar = localStorage.getItem('avatar');
-        const savedUsername = localStorage.getItem('username');
-
+  
         setMessages([...messages, { 
           ...newMessageData.latestMessage, 
-          username: savedUsername,  // Använd det sparade användarnamnet
-          avatar: savedAvatar || 'https://i.pravatar.cc/100',  // Använd den sparade avataren
+          username: 'Du', 
+          avatar: savedAvatar || 'https://i.pravatar.cc/100',
         }]);
         
         setNewMessage('');
-
-        // Visa slumpmässiga Patrik-meddelanden varje gång användaren skickar ett nytt meddelande
+  
+        // Visa slumpmässiga fejkade-meddelanden varje gång användaren skickar ett nytt meddelande
         setTimeout(() => {
-          const randomReply = getRandomReply(); // Få ett slumpmässigt svar från Patrik
+          const randomReply = getRandomReply();
           const fakeReply = {
             id: `fake-${Date.now()}`,
             text: randomReply,
-            username: 'Patrik',  // Byt namn från Johnny till Patrik
+            username: 'Patrik',
             avatar: 'https://i.pravatar.cc/100?img=14',
             conversationId: null,
           };
           setMessages((prevMessages) => [...prevMessages, fakeReply]);
-        }, 1000); // 1 sekunds fördröjning
+        }, 1000);
       } else {
         const errorData = await response.json();
         console.error(`Failed to send message: ${response.status}`, errorData);
@@ -118,7 +115,7 @@ const Chat = ({ conversationId = 'mock-conversation-id' }) => {
       console.error('Error sending message:', error);
     }
   };
-
+  // Funktion för att ta bort meddelanden
   const handleDeleteMessage = async (messageId) => {
     try {
       const response = await fetch(`https://chatify-api.up.railway.app/messages/${messageId}`, {
@@ -141,8 +138,7 @@ const Chat = ({ conversationId = 'mock-conversation-id' }) => {
   return (
     <div className="chat-page">
       <h2>Hej {username || 'användare'}!</h2>
-      {avatar && <img src={avatar} alt="User Avatar" />}  {/* Visa avataren om den finns */}
-
+      {avatar && <img src={avatar} alt="User Avatar" />}
       <div className="messages-container">
         {messages.length > 0 ? (
           messages.map((message, index) => (

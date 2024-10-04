@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './Login.css';  // Import the CSS file for Login page
+import './Login.css'; 
 
 export default function Login({ setIsAuthenticated }) {
   const [username, setUsername] = useState('');
@@ -20,7 +20,7 @@ export default function Login({ setIsAuthenticated }) {
   // Funktion för att dekodera JWT-token
   const decodeJwt = (token) => {
     try {
-      const base64Url = token.split('.')[1]; // Plocka ut payload-delen
+      const base64Url = token.split('.')[1];
       const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
       const jsonPayload = decodeURIComponent(
         atob(base64)
@@ -40,7 +40,7 @@ export default function Login({ setIsAuthenticated }) {
   const handleLogin = async (e) => {
     e.preventDefault();
 
-    const csrfToken = localStorage.getItem('csrfToken'); // Se till att denna används korrekt
+    const csrfToken = localStorage.getItem('csrfToken');
     try {
       const response = await fetch('https://chatify-api.up.railway.app/auth/token', {
         method: 'POST',
@@ -50,7 +50,7 @@ export default function Login({ setIsAuthenticated }) {
         body: JSON.stringify({
           username: username,
           password: password,
-          csrfToken: csrfToken  // Ta bort detta om det inte behövs
+          csrfToken: csrfToken 
         }),
       });
 
@@ -60,17 +60,16 @@ export default function Login({ setIsAuthenticated }) {
         localStorage.setItem('authToken', data.token);
         setIsAuthenticated(true);
 
-        // Lägg till debugging här för att kontrollera om token fungerar korrekt
         console.log('Inloggning lyckades, authToken sparad:', data.token);
 
         // Dekoda JWT-token för att få användarinformationen
         const decodedJwt = decodeJwt(data.token);
-        console.log('Dekodad JWT:', decodedJwt); // Debugging för att se den dekodade payloaden
+        console.log('Dekodad JWT:', decodedJwt); 
 
         if (decodedJwt) {
           // Spara användarnamnet och avataren i localStorage
-          localStorage.setItem('username', decodedJwt.user); // Använd det rätta fältet från JWT
-          localStorage.setItem('avatar', decodedJwt.avatar || 'https://i.pravatar.cc/100'); // Fallback om avatar inte finns
+          localStorage.setItem('username', decodedJwt.user);
+          localStorage.setItem('avatar', decodedJwt.avatar || 'https://i.pravatar.cc/100');
           
           navigate('/chat');
         } else {
@@ -90,7 +89,7 @@ export default function Login({ setIsAuthenticated }) {
     <div className="page-container login-page">
       <div className="form-container">
         <h2>Login to ChatFlow</h2>
-        {error && <p style={{ color: 'red' }}>{error}</p>}  {/* Visa felmeddelande om det finns */}
+        {error && <p style={{ color: 'red' }}>{error}</p>}
         <form onSubmit={handleLogin}>
           <div className="form-group">
             <input

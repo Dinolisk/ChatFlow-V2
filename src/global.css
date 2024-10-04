@@ -1,30 +1,28 @@
-/* Centering the form content */
 .page-container {
     display: flex;
     flex-direction: column;
-    align-items: center;     /* Horizontal centering */
-    justify-content: flex-start; /* Start content closer to the top */
+    align-items: center; 
+    justify-content: flex-start;
     height: 100vh;
-    padding-top: 50px;       /* Some padding to avoid sticking to the top */
+    padding-top: 50px;  
     padding: 2rem;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* Shared form container (white box) */
+
 .form-container {
     background-color: white;
     padding: 2rem;
     border-radius: 15px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    max-width: 500px;        /* Maximum width of the form */
+    max-width: 500px;  
     width: 100%;
     text-align: center;
-    margin: 0 auto;          /* Center the form horizontally */
+    margin: 0 auto;          
     margin-bottom: 20px;   
-    padding-top: 50px;     /* Space below the form */
+    padding-top: 50px;     
 }
 
-/* Shared input styling for both login and register */
 .form-group {
     margin-bottom: 15px;
     width: 100%;
@@ -57,38 +55,38 @@
 .shared-btn:hover {
     background-color: #5a42a1;    
 }
-/* Basic styling for header */
+
 .header {
     width: 100%;
     display: flex;
-    justify-content: space-between; /* Space between title and logout button */
-    align-items: center; /* Align vertically */
+    justify-content: space-between; 
+    align-items: center;
     padding: 20px;
     background-color: #f5f5f5;
 }
 
-/* Styling for the Logout Button */
+
 .logout-btn {
-    background-color: red;    /* Red background */
-    color: white;             /* White text */
-    padding: 10px 20px;       /* Bigger button */
-    border: none;             /* Remove default border */
-    border-radius: 5px;       /* Rounded corners */
-    font-size: 16px;          /* Larger text */
-    cursor: pointer;          /* Pointer on hover */
+    background-color: rgb(9, 126, 243);   
+    color: white;           
+    padding: 10px 20px;     
+    border: none;            
+    border-radius: 5px;     
+    font-size: 16px;         
+    cursor: pointer;  
     position: relative;
-    left: 0;                  /* Align to the very left */
+    left: 0;   
 }
 
-/* Hover Effect for Logout Button */
+
 .logout-btn:hover {
-    background-color: darkred; /* Darker red on hover */
+    background-color: rgb(3, 0, 152); 
 }
 
-/* Centered title or Home link */
+
 .navbar-home-link, h1 {
     text-align: center;
-    flex: 1; /* Make title take remaining space */
+    flex: 1; 
     margin: 0;
     font-size: 24px;
 }
@@ -96,7 +94,7 @@
   .navbar-home-link:hover {
     text-decoration: underline;
   }
-/* Apply background image to the entire page */
+
 body {
    background-color: rgb(182, 245, 224);
     background-size: cover;          

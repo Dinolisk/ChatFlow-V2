@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import './Register.css'; // Import the CSS file for Register page
+import './Register.css'; 
 
 function Register() {
   const [username, setUsername] = useState('');
@@ -11,9 +11,9 @@ function Register() {
   const navigate = useNavigate();
 
   const handleRegister = async (e) => {
-    e.preventDefault(); // Prevent the default form submission
+    e.preventDefault();
 
-    // Check if passwords match before making the API request
+    // Kolla om lösenorden stämmer med varandra
     if (password !== confirmPassword) {
       setError('Passwords do not match');
       return;
@@ -29,7 +29,7 @@ function Register() {
       });
 
       if (response.ok) {
-        // Redirect to login page after successful registration
+
         navigate('/login');
       } else {
         setError('Username or email already exists');
@@ -42,7 +42,7 @@ function Register() {
   return (
     <div className="page-container register-page">
       <div className="form-container">
-        <h2>Register ChatFlow</h2>
+        <h2>Register</h2>
         {error && <p style={{ color: 'red' }}>{error}</p>}
         <form onSubmit={handleRegister}>
           <div className="form-group">
@@ -52,7 +52,7 @@ function Register() {
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               className="form-control"
-              required // Ensures the username field is required
+              required
             />
           </div>
           <div className="form-group">
@@ -62,7 +62,7 @@ function Register() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="form-control"
-              required // Ensures the email field is required
+              required
             />
           </div>
           <div className="form-group">
@@ -72,8 +72,8 @@ function Register() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="form-control"
-              required // Ensures the password field is required
-              minLength="6" // Minimum password length of 6 characters
+              required
+              minLength="6"
             />
           </div>
           <div className="form-group">
@@ -83,7 +83,7 @@ function Register() {
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               className="form-control"
-              required // Ensures the confirm password field is required
+              required
             />
           </div>
           <button type="submit" className="shared-btn">Register</button>
