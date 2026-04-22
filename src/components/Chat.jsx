@@ -45,8 +45,16 @@ async function getGeminiReply(userMessage) {
   return data?.candidates?.[0]?.content?.parts?.[0]?.text ?? 'Hmm, jag vet inte riktigt vad jag ska svara på det 😅';
 }
 
+const welcomeMessage = {
+  id: 'welcome',
+  text: 'Hej! 👋 Jag heter Patrik och är din AI-assistent. Du kan chatta med mig, ställa frågor eller bara slå en signal. Vad kan jag hjälpa dig med idag?',
+  username: 'Patrik',
+  avatar: 'https://i.pravatar.cc/100?img=14',
+  user_id: null,
+};
+
 const Chat = () => {
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState([welcomeMessage]);
   const [newMessage, setNewMessage] = useState('');
   const [username, setUsername] = useState('');
   const [avatar, setAvatar] = useState('');
@@ -80,7 +88,8 @@ const Chat = () => {
 
       if (error) { console.error('Failed to fetch messages:', error); return; }
 
-      setMessages((rows ?? []).map((row) => mapMessageRow(row, uid)));
+      const fetched = (rows ?? []).map((row) => mapMessageRow(row, uid));
+      setMessages(fetched.length > 0 ? fetched : [welcomeMessage]);
 
       channel = supabase
         .channel('public:messages')
