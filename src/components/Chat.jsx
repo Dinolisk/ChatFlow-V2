@@ -17,7 +17,7 @@ function mapMessageRow(row, currentUserId) {
 
 async function getGeminiReply(userMessage) {
   const response = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`,
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`,
     {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -34,6 +34,13 @@ async function getGeminiReply(userMessage) {
       }),
     }
   );
+
+  if (!response.ok) {
+    const err = await response.json();
+    console.error('Gemini API error:', err);
+    throw new Error(err?.error?.message ?? 'API-fel');
+  }
+
   const data = await response.json();
   return data?.candidates?.[0]?.content?.parts?.[0]?.text ?? 'Hmm, jag vet inte riktigt vad jag ska svara på det 😅';
 }
