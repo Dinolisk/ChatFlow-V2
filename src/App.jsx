@@ -18,7 +18,18 @@ function App() {
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      // När användaren bekräftar sin e-post skapas en session automatiskt.
+      // Vi loggar ut dem direkt så de får logga in manuellt istället.
+      if (event === 'SIGNED_IN' && session?.user?.email_confirmed_at) {
+        const isNewConfirmation = !localStorage.getItem('hasLoggedInBefore_' + session.user.id);
+        if (isNewConfirmation) {
+          localStorage.setItem('hasLoggedInBefore_' + session.user.id, 'true');
+          supabase.auth.signOut();
+          window.location.href = '/login?confirmed=true';
+          return;
+        }
+      }
       setIsAuthenticated(!!session);
     });
 

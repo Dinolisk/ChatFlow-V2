@@ -10,6 +10,7 @@ export default function Login({ setIsAuthenticated }) {
   const navigate = useNavigate();
   const location = useLocation();
   const registerNote = location.state?.message;
+  const emailConfirmed = new URLSearchParams(location.search).get('confirmed') === 'true';
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -55,6 +56,7 @@ export default function Login({ setIsAuthenticated }) {
     <div className="page-container login-page">
       <div className="form-container">
         <h2>Login to ChatFlow</h2>
+        {emailConfirmed && <p className="msg-success">E-posten bekräftad! Logga in med dina uppgifter.</p>}
         {registerNote && <p className="msg-success">{registerNote}</p>}
         {error && <p className="msg-error">{error}</p>}
         <form onSubmit={handleLogin}>
