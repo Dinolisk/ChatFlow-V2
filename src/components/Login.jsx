@@ -1,104 +1,72 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import './Login.css'; 
+import { useNavigate, useLocation } from 'react-router-dom';
+import { supabase } from '../supabaseClient';
+import './Login.css';
 
 export default function Login({ setIsAuthenticated }) {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const location = useLocation();
+  const registerNote = location.state?.message;
 
-  // Kontrollera om användaren redan är inloggad
   useEffect(() => {
-    const token = localStorage.getItem('authToken');
-    if (token) {
-      setIsAuthenticated(true);
-      navigate('/chat');
-    }
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) {
+        setIsAuthenticated(true);
+        navigate('/chat');
+      }
+    });
   }, [setIsAuthenticated, navigate]);
-
-  // Funktion för att dekodera JWT-token
-  const decodeJwt = (token) => {
-    try {
-      const base64Url = token.split('.')[1];
-      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-      const jsonPayload = decodeURIComponent(
-        atob(base64)
-          .split('')
-          .map(function (c) {
-            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-          })
-          .join('')
-      );
-      return JSON.parse(jsonPayload); // Returnera den dekodade JSON payloaden
-    } catch (error) {
-      console.error('Fel vid dekodering av JWT-token:', error);
-      return null;
-    }
-  };
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setError('');
 
-    const csrfToken = localStorage.getItem('csrfToken');
-    try {
-      const response = await fetch('https://chatify-api.up.railway.app/auth/token', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          username: username,
-          password: password,
-          csrfToken: csrfToken 
-        }),
-      });
+    const { data, error: signInError } = await supabase.auth.signInWithPassword({
+      email: email.trim(),
+      password,
+    });
 
-      const data = await response.json();
-
-      if (response.ok) {
-        localStorage.setItem('authToken', data.token);
-        setIsAuthenticated(true);
-
-        console.log('Inloggning lyckades, authToken sparad:', data.token);
-
-        // Dekoda JWT-token för att få användarinformationen
-        const decodedJwt = decodeJwt(data.token);
-        console.log('Dekodad JWT:', decodedJwt); 
-
-        if (decodedJwt) {
-          // Spara användarnamnet och avataren i localStorage
-          localStorage.setItem('username', decodedJwt.user);
-          localStorage.setItem('avatar', decodedJwt.avatar || 'https://i.pravatar.cc/100');
-          
-          navigate('/chat');
-        } else {
-          setError('Kunde inte dekoda användarinformation.');
-        }
-      } else {
-        setError(data.message || 'Inloggning misslyckades');
-        console.error('Inloggningsfel:', data);
-      }
-    } catch (error) {
-      setError('Ett fel uppstod vid inloggning');
-      console.error('Inloggningsfel:', error);
+    if (signInError) {
+      const msg =
+        signInError.message === 'Invalid login credentials'
+          ? 'Fel e-post eller lösenord.'
+          : signInError.message;
+      setError(msg);
+      return;
     }
+
+    const user = data.user;
+    const meta = user?.user_metadata ?? {};
+    const displayName = meta.username || user?.email?.split('@')[0] || 'användare';
+    const avatarUrl = meta.avatar_url || 'https://i.pravatar.cc/100';
+
+    localStorage.setItem('username', displayName);
+    localStorage.setItem('avatar', avatarUrl);
+    if (user?.id) localStorage.setItem('userId', user.id);
+
+    setIsAuthenticated(true);
+    navigate('/chat');
   };
 
   return (
     <div className="page-container login-page">
       <div className="form-container">
         <h2>Login to ChatFlow</h2>
+        {registerNote && <p style={{ color: 'green' }}>{registerNote}</p>}
         {error && <p style={{ color: 'red' }}>{error}</p>}
         <form onSubmit={handleLogin}>
           <div className="form-group">
             <input
-              type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              placeholder="Username"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="E-post"
               className="form-control"
               required
+              autoComplete="email"
             />
           </div>
           <div className="form-group">
@@ -109,9 +77,12 @@ export default function Login({ setIsAuthenticated }) {
               placeholder="Password"
               className="form-control"
               required
+              autoComplete="current-password"
             />
           </div>
-          <button type="submit" className="shared-btn">Log In</button>
+          <button type="submit" className="shared-btn">
+            Log In
+          </button>
         </form>
       </div>
     </div>

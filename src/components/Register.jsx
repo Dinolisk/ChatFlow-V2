@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import './Register.css'; 
+import { supabase } from '../supabaseClient';
+import './Register.css';
 
 function Register() {
   const [username, setUsername] = useState('');
@@ -13,13 +14,11 @@ function Register() {
   const handleRegister = async (e) => {
     e.preventDefault();
 
-    // Kolla om lösenorden stämmer med varandra
     if (password !== confirmPassword) {
       setError('Passwords do not match');
       return;
     }
 
-    // Validera input
     if (!username || !email || !password) {
       setError('All fields are required');
       return;
@@ -30,43 +29,36 @@ function Register() {
       return;
     }
 
-    try {
-      console.log('Attempting to register:', { username, email }); // Debug logging
-      
-      const response = await fetch('https://chatify-api.up.railway.app/auth/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+    setError(null);
+
+    const { data, error: signUpError } = await supabase.auth.signUp({
+      email: email.trim(),
+      password,
+      options: {
+        data: {
+          username: username.trim(),
+          avatar_url: 'https://i.pravatar.cc/100',
         },
-        body: JSON.stringify({ username, email, password }),
-      });
+      },
+    });
 
-      console.log('Registration response status:', response.status); // Debug logging
-      console.log('Registration response ok:', response.ok); // Debug logging
-
-      if (response.ok) {
-        const data = await response.json();
-        console.log('Registration successful:', data); // Debug logging
-        navigate('/login');
+    if (signUpError) {
+      if (signUpError.message?.includes('already registered')) {
+        setError('E-postadressen används redan');
       } else {
-        const errorData = await response.json().catch(() => ({}));
-        console.log('Registration error:', errorData); // Debug logging
-        
-        // Mer specifika felmeddelanden
-        if (response.status === 409) {
-          setError('Username or email already exists');
-        } else if (response.status === 400) {
-          setError(errorData.message || 'Invalid input data');
-        } else if (response.status === 500) {
-          setError('Server error. Please try again later');
-        } else {
-          setError('Registration failed. Please try again');
-        }
+        setError(signUpError.message);
       }
-    } catch (err) {
-      console.error('Registration error:', err); // Debug logging
-      setError('Network error. Please check your connection');
+      return;
     }
+
+    if (data.user && !data.session) {
+      navigate('/login', {
+        state: { message: 'Konto skapat. Bekräfta e-posten om din inställning kräver det, logga sedan in.' },
+      });
+      return;
+    }
+
+    navigate('/login');
   };
 
   return (
@@ -116,7 +108,9 @@ function Register() {
               required
             />
           </div>
-          <button type="submit" className="shared-btn">Register</button>
+          <button type="submit" className="shared-btn">
+            Register
+          </button>
         </form>
         <p>
           Already have an account? <Link to="/login">Log In</Link>

@@ -4,30 +4,34 @@ import Register from './components/Register';
 import Login from './components/Login';
 import Chat from './components/Chat';
 import Home from './components/Home';
-import Header from './components/Header'; 
+import Header from './components/Header';
+import { supabase } from './supabaseClient';
 import './global.css';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  // Kontrollera token i localStorage vid sidladdning
   useEffect(() => {
-    const token = localStorage.getItem('authToken');
-    if (token) {
-      setIsAuthenticated(true);
-    } else {
-      setIsAuthenticated(false);
-    }
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setIsAuthenticated(!!session);
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setIsAuthenticated(!!session);
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
-  // Hantera utloggning och rensa all användardata
-  const handleLogout = () => {
-    localStorage.removeItem('authToken');
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
     localStorage.removeItem('username');
     localStorage.removeItem('userId');
     localStorage.removeItem('avatar');
     setIsAuthenticated(false);
-    window.location.href = '/login'; 
+    window.location.href = '/login';
   };
 
   return (
