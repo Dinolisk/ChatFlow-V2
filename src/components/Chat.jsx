@@ -3,6 +3,8 @@ import DOMPurify from 'dompurify';
 import { supabase } from '../supabaseClient';
 import './Chat.css';
 
+const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
+
 function mapMessageRow(row, currentUserId) {
   return {
     id: row.id,
@@ -13,18 +15,28 @@ function mapMessageRow(row, currentUserId) {
   };
 }
 
-const fakeChatReplies = [
-  'Tja tja, hur mår du?',
-  'Hallå!! Svara då!!',
-  'Sover du eller?! 😴',
-  'Hur var din dag?',
-  'Ska vi ses snart?',
-  'Jag funderar på vad vi kan hitta på i helgen!',
-  'Såg du den nya filmen på bio?',
-  'Vad tänker du på?',
-  'Hur går det med jobbet?',
-  'Har du några roliga planer till helgen?',
-];
+async function getGeminiReply(userMessage) {
+  const response = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [
+          {
+            parts: [
+              {
+                text: `Du är en vänlig chattbot som heter Patrik. Svara kort och avslappnat på svenska, max 2 meningar. Användaren skriver: "${userMessage}"`,
+              },
+            ],
+          },
+        ],
+      }),
+    }
+  );
+  const data = await response.json();
+  return data?.candidates?.[0]?.content?.parts?.[0]?.text ?? 'Hmm, jag vet inte riktigt vad jag ska svara på det 😅';
+}
 
 const Chat = () => {
   const [messages, setMessages] = useState([]);
@@ -32,6 +44,7 @@ const Chat = () => {
   const [username, setUsername] = useState('');
   const [avatar, setAvatar] = useState('');
   const [viewerId, setViewerId] = useState(null);
+  const [patrikTyping, setPatrikTyping] = useState(false);
   const bottomRef = useRef(null);
 
   const refreshLocalProfile = useCallback(() => {
@@ -104,16 +117,22 @@ const Chat = () => {
     setMessages((prev) => prev.some((m) => m.id === inserted.id) ? prev : [...prev, mapMessageRow(inserted, user.id)]);
     setNewMessage('');
 
-    setTimeout(() => {
+    setPatrikTyping(true);
+    try {
+      const replyText = await getGeminiReply(sanitized);
       const fakeReply = {
         id: `fake-${Date.now()}`,
-        text: fakeChatReplies[Math.floor(Math.random() * fakeChatReplies.length)],
+        text: replyText,
         username: 'Patrik',
         avatar: 'https://i.pravatar.cc/100?img=14',
         user_id: null,
       };
       setMessages((prev) => [...prev, fakeReply]);
-    }, 1000);
+    } catch (err) {
+      console.error('Gemini error:', err);
+    } finally {
+      setPatrikTyping(false);
+    }
   };
 
   const handleDeleteMessage = async (messageId) => {
@@ -162,6 +181,14 @@ const Chat = () => {
             </div>
           );
         })}
+        {patrikTyping && (
+          <div className="message patrik-message">
+            <img src="https://i.pravatar.cc/100?img=14" alt="Patrik" />
+            <div className="bubble typing-indicator">
+              <span /><span /><span />
+            </div>
+          </div>
+        )}
         <div ref={bottomRef} />
       </div>
 
