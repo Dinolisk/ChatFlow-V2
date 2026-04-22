@@ -75,9 +75,12 @@ const Chat = () => {
 
   useEffect(() => {
     let channel;
+    let cancelled = false;
 
     const run = async () => {
       const { data: { user } } = await supabase.auth.getUser();
+      if (cancelled) return;
+
       const uid = user?.id ?? null;
       setViewerId(uid);
 
@@ -86,13 +89,14 @@ const Chat = () => {
         .select('*')
         .order('created_at', { ascending: true });
 
+      if (cancelled) return;
       if (error) { console.error('Failed to fetch messages:', error); return; }
 
       const fetched = (rows ?? []).map((row) => mapMessageRow(row, uid));
       setMessages(fetched.length > 0 ? fetched : [welcomeMessage]);
 
       channel = supabase
-        .channel('public:messages')
+        .channel(`public:messages:${Date.now()}`)
         .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, (payload) => {
           const row = payload.new;
           setMessages((prev) => {
@@ -108,7 +112,10 @@ const Chat = () => {
     };
 
     run();
-    return () => { if (channel) supabase.removeChannel(channel); };
+    return () => {
+      cancelled = true;
+      if (channel) supabase.removeChannel(channel);
+    };
   }, []);
 
   const handleSendMessage = async (e) => {
