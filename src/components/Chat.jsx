@@ -3,7 +3,7 @@ import DOMPurify from 'dompurify';
 import { supabase } from '../supabaseClient';
 import './Chat.css';
 
-const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
+const GROQ_API_KEY = import.meta.env.VITE_GROQ_API_KEY;
 
 function mapMessageRow(row, currentUserId) {
   return {
@@ -15,34 +15,37 @@ function mapMessageRow(row, currentUserId) {
   };
 }
 
-async function getGeminiReply(userMessage) {
-  const response = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent?key=${GEMINI_API_KEY}`,
-    {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [
-          {
-            parts: [
-              {
-                text: `Du är en vänlig chattbot som heter Patrik. Svara kort och avslappnat på svenska, max 2 meningar. Användaren skriver: "${userMessage}"`,
-              },
-            ],
-          },
-        ],
-      }),
-    }
-  );
+async function getGroqReply(userMessage) {
+  const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${GROQ_API_KEY}`,
+    },
+    body: JSON.stringify({
+      model: 'llama-3.3-70b-versatile',
+      messages: [
+        {
+          role: 'system',
+          content: 'Du är en vänlig chattbot som heter Patrik. Svara kort och avslappnat på svenska, max 2 meningar.',
+        },
+        {
+          role: 'user',
+          content: userMessage,
+        },
+      ],
+      max_tokens: 150,
+    }),
+  });
 
   if (!response.ok) {
     const err = await response.json();
-    console.error('Gemini API error:', err);
+    console.error('Groq API error:', err);
     throw new Error(err?.error?.message ?? 'API-fel');
   }
 
   const data = await response.json();
-  return data?.candidates?.[0]?.content?.parts?.[0]?.text ?? 'Hmm, jag vet inte riktigt vad jag ska svara på det 😅';
+  return data?.choices?.[0]?.message?.content ?? 'Hmm, jag vet inte riktigt vad jag ska svara på det 😅';
 }
 
 const welcomeMessage = {
@@ -142,7 +145,7 @@ const Chat = () => {
 
     setPatrikTyping(true);
     try {
-      const replyText = await getGeminiReply(sanitized);
+      const replyText = await getGroqReply(sanitized);
       const fakeReply = {
         id: `fake-${Date.now()}`,
         text: replyText,
