@@ -81,10 +81,10 @@ body {
 .page-container {
   flex: 1;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   min-height: calc(100vh - 60px);
-  padding: 2rem 1rem;
+  padding: 6rem 1rem 2rem;
   background: radial-gradient(ellipse at 50% 0%, rgba(99,102,241,0.12) 0%, transparent 65%), var(--bg);
 }
 
@@ -225,6 +225,48 @@ body {
 }
 
 /* ─── Home page ──────────────────────────────────────────── */
+.home-card {
+  text-align: center;
+}
+
+.home-logo {
+  font-size: 3rem;
+  margin-bottom: 0.5rem;
+}
+
+.home-tagline {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  margin-top: 0.25rem;
+  margin-bottom: 1.75rem;
+}
+
+.home-features {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+  text-align: left;
+}
+
+.home-features li {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.9rem;
+  color: var(--text);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 0.6rem 0.9rem;
+}
+
+.feature-icon {
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
 .auth-links {
   display: flex;
   flex-direction: column;
@@ -232,9 +274,7 @@ body {
   margin-top: 1.5rem;
 }
 
-.home-subtitle {
-  color: var(--text-muted);
-  font-size: 0.9rem;
-  margin-bottom: 0;
-  text-align: center;
+.btn-secondary {
+  background: var(--surface-3) !important;
+  color: var(--text) !important;
 }
