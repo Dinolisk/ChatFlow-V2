@@ -1,18 +1,13 @@
-
 <!DOCTYPE html>
-<html lang="en">
+<html lang="sv">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<!-- 
-  För att säkerställa att endast specifika inline-stilar används i appen, 
-  har jag valt att använda hash-baserad CSP istället för 'unsafe-inline'. 
-  Detta ger bättre skydd mot potentiella XSS-attacker genom att tillåta endast de inline-stilar som matchar dessa hash-värden.
-  Dock behöver nya hash-värden läggas till om nya inline-stilar introduceras.
--->
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'sha256-k5k9ot8Pm1beYCKWc4r8K77f4fUakc+hmOwPHnkCUbg=' 'sha256-uxOOg4Tc7AmsyaqfBzAwORASBK+zOFtd3ZdvlshEsaY=' 'sha256-GDQJkmLrc3WpMHguNusvtozGwgXgMApiEtxuHAdoha8=' 'sha256-kC/ThDCHyEf3CfN08ueky5st7uO8d7nRbAQqfjWVqW8=' 'sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=' 'sha256-7eyuEyhJ8PaftvJ8Z50F+YZXmAHBJQdyLcyLwGg+NdA=' 'sha256-3p1Ar3lZ4paDWeMmQCjlBQo5HTEzLm9iEp1g0FyJ3Wo='; img-src 'self' https://i.pravatar.cc; font-src 'self'; connect-src 'self' https://*.supabase.co wss://*.supabase.co ws://localhost:5173 ws://127.0.0.1:5173; media-src 'none'">
-
-  <title>Vite App</title>
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' https://i.pravatar.cc data:; connect-src 'self' https://*.supabase.co wss://*.supabase.co ws://localhost:5173 ws://127.0.0.1:5173; media-src 'none'">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <title>ChatFlow</title>
 </head>
 <body>
   <div id="root"></div>

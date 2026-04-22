@@ -65,7 +65,7 @@ function Register() {
     <div className="page-container register-page">
       <div className="form-container">
         <h2>Register</h2>
-        {error && <p style={{ color: 'red' }}>{error}</p>}
+        {error && <p className="msg-error">{error}</p>}
         <form onSubmit={handleRegister}>
           <div className="form-group">
             <input

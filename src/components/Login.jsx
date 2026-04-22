@@ -55,8 +55,8 @@ export default function Login({ setIsAuthenticated }) {
     <div className="page-container login-page">
       <div className="form-container">
         <h2>Login to ChatFlow</h2>
-        {registerNote && <p style={{ color: 'green' }}>{registerNote}</p>}
-        {error && <p style={{ color: 'red' }}>{error}</p>}
+        {registerNote && <p className="msg-success">{registerNote}</p>}
+        {error && <p className="msg-error">{error}</p>}
         <form onSubmit={handleLogin}>
           <div className="form-group">
             <input
