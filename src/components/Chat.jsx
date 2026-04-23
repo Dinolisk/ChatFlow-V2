@@ -67,16 +67,8 @@ async function getAIReply(userMessage) {
 
 const PATRIK_AVATAR = 'https://api.dicebear.com/9.x/thumbs/svg?seed=Patrik&backgroundColor=8b5cf6';
 
-const welcomeMessage = {
-  id: 'welcome',
-  text: 'Hej! 👋 Jag heter Patrik och är din AI-assistent. Du kan chatta med mig, ställa frågor eller bara slå en signal. Vad kan jag hjälpa dig med idag?',
-  username: 'Patrik',
-  avatar: PATRIK_AVATAR,
-  user_id: null,
-};
-
 const Chat = () => {
-  const [messages, setMessages] = useState([welcomeMessage]);
+  const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
   const [username, setUsername] = useState('');
   const [avatar, setAvatar] = useState('');
@@ -97,6 +89,14 @@ const Chat = () => {
       setAvatar(av);
       localStorage.setItem('username', displayName);
       localStorage.setItem('avatar', av);
+
+      setMessages([{
+        id: 'welcome',
+        text: `Hej, ${displayName}! 👋 Jag heter Patrik och är din AI-assistent. Du kan chatta med mig, ställa frågor eller bara slå en signal. Vad kan jag hjälpa dig med idag?`,
+        username: 'Patrik',
+        avatar: PATRIK_AVATAR,
+        user_id: null,
+      }]);
     };
     run();
   }, []);
@@ -161,7 +161,7 @@ const Chat = () => {
     <div className="chat-page">
       <div className="chat-topbar">
         {avatar && <img src={avatar} alt="Avatar" />}
-        <h2>Hej, {username}!</h2>
+        <h2>{username}</h2>
       </div>
 
       <div className="messages-container">
