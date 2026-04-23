@@ -23,7 +23,7 @@ async function getAIReply(userMessage) {
       'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
     },
     body: JSON.stringify({
-      model: 'meta-llama/llama-3.3-70b-instruct:free',
+      model: 'meta-llama/llama-3.2-3b-instruct:free',
       messages: [
         {
           role: 'system',
