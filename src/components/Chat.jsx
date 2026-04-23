@@ -10,7 +10,14 @@ function userAvatar(userId) {
   return `https://api.dicebear.com/9.x/thumbs/svg?seed=${userId}&backgroundColor=6366f1`;
 }
 
-async function getAIReply(userMessage) {
+const FREE_MODELS = [
+  'openai/gpt-oss-20b:free',
+  'meta-llama/llama-3.2-3b-instruct:free',
+  'nvidia/nemotron-nano-9b-v2:free',
+  'google/gemma-3-12b-it:free',
+];
+
+async function tryModel(model, userMessage) {
   const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
     method: 'POST',
     headers: {
@@ -20,7 +27,7 @@ async function getAIReply(userMessage) {
       'X-Title': 'ChatFlow',
     },
     body: JSON.stringify({
-      model: 'openai/gpt-oss-20b:free',
+      model,
       messages: [
         {
           role: 'system',
@@ -32,18 +39,30 @@ async function getAIReply(userMessage) {
     }),
   });
 
-  if (response.status === 429) {
-    throw new Error('rate_limit');
-  }
-
+  if (response.status === 429) throw new Error('rate_limit');
   if (!response.ok) {
-    const err = await response.json();
-    console.error('AI API error:', err);
+    const err = await response.json().catch(() => ({}));
     throw new Error(err?.error?.message ?? 'API-fel');
   }
 
   const data = await response.json();
-  return data?.choices?.[0]?.message?.content ?? 'Hmm, jag vet inte riktigt vad jag ska svara på det 😅';
+  const text = data?.choices?.[0]?.message?.content?.trim();
+  if (!text) throw new Error('empty_response');
+  return text;
+}
+
+async function getAIReply(userMessage) {
+  let lastError;
+  for (const model of FREE_MODELS) {
+    try {
+      const reply = await tryModel(model, userMessage);
+      return reply;
+    } catch (err) {
+      console.warn(`Model ${model} failed: ${err.message}`);
+      lastError = err;
+    }
+  }
+  throw lastError;
 }
 
 const PATRIK_AVATAR = 'https://api.dicebear.com/9.x/thumbs/svg?seed=Patrik&backgroundColor=8b5cf6';
