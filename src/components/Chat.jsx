@@ -3,7 +3,7 @@ import DOMPurify from 'dompurify';
 import { supabase } from '../supabaseClient';
 import './Chat.css';
 
-const GROQ_API_KEY = import.meta.env.VITE_GROQ_API_KEY;
+const OPENROUTER_API_KEY = import.meta.env.VITE_OPENROUTER_API_KEY;
 
 function mapMessageRow(row, currentUserId) {
   return {
@@ -15,15 +15,15 @@ function mapMessageRow(row, currentUserId) {
   };
 }
 
-async function getGroqReply(userMessage) {
-  const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+async function getAIReply(userMessage) {
+  const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${GROQ_API_KEY}`,
+      'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
     },
     body: JSON.stringify({
-      model: 'llama-3.3-70b-versatile',
+      model: 'meta-llama/llama-3.3-70b-instruct:free',
       messages: [
         {
           role: 'system',
@@ -40,7 +40,7 @@ async function getGroqReply(userMessage) {
 
   if (!response.ok) {
     const err = await response.json();
-    console.error('Groq API error:', err);
+    console.error('AI API error:', err);
     throw new Error(err?.error?.message ?? 'API-fel');
   }
 
@@ -145,7 +145,7 @@ const Chat = () => {
 
     setPatrikTyping(true);
     try {
-      const replyText = await getGroqReply(sanitized);
+      const replyText = await getAIReply(sanitized);
       const fakeReply = {
         id: `fake-${Date.now()}`,
         text: replyText,
@@ -155,7 +155,7 @@ const Chat = () => {
       };
       setMessages((prev) => [...prev, fakeReply]);
     } catch (err) {
-      console.error('Gemini error:', err);
+      console.error('AI error:', err);
     } finally {
       setPatrikTyping(false);
     }
