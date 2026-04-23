@@ -20,7 +20,7 @@ async function getAIReply(userMessage) {
       'X-Title': 'ChatFlow',
     },
     body: JSON.stringify({
-      model: 'meta-llama/llama-3.2-3b-instruct:free',
+      model: 'openai/gpt-oss-20b:free',
       messages: [
         {
           role: 'system',
