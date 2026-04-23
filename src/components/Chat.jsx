@@ -159,10 +159,7 @@ const Chat = () => {
 
   return (
     <div className="chat-page">
-      <div className="chat-topbar">
-        {avatar && <img src={avatar} alt="Avatar" />}
-        <h2>{username}</h2>
-      </div>
+
 
       <div className="messages-container">
         {messages.map((message, index) => {
