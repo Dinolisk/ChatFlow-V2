@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
+import { signInAsGuest } from '../guestLogin';
 import './Login.css';
 
 export default function Login({ setIsAuthenticated }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [guestLoading, setGuestLoading] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const registerNote = location.state?.message;
@@ -52,6 +54,20 @@ export default function Login({ setIsAuthenticated }) {
     navigate('/chat');
   };
 
+  const handleGuestLogin = async () => {
+    setError('');
+    setGuestLoading(true);
+    try {
+      await signInAsGuest();
+      setIsAuthenticated(true);
+      navigate('/chat');
+    } catch {
+      setError('Kunde inte starta gästläge just nu.');
+    } finally {
+      setGuestLoading(false);
+    }
+  };
+
   return (
     <div className="page-container login-page">
       <div className="form-container">
@@ -86,6 +102,15 @@ export default function Login({ setIsAuthenticated }) {
             Log In
           </button>
         </form>
+        <p className="auth-divider">eller</p>
+        <button
+          type="button"
+          className="shared-btn"
+          onClick={handleGuestLogin}
+          disabled={guestLoading}
+        >
+          {guestLoading ? 'Startar…' : 'Prova som gäst'}
+        </button>
       </div>
     </div>
   );

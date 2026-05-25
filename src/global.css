@@ -210,6 +210,12 @@ body {
   transform: translateY(0);
 }
 
+.shared-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
 /* ─── Logout button ──────────────────────────────────────── */
 .logout-btn {
   padding: 0.45rem 1rem;
@@ -306,4 +312,11 @@ body {
 .btn-secondary {
   background: var(--surface-3) !important;
   color: var(--text) !important;
+}
+
+.auth-divider {
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin: 1rem 0 0.75rem;
 }

@@ -21,7 +21,7 @@ function App() {
     } = supabase.auth.onAuthStateChange((event, session) => {
       // När användaren bekräftar sin e-post skapas en session automatiskt.
       // Vi loggar ut dem direkt så de får logga in manuellt istället.
-      if (event === 'SIGNED_IN' && session?.user?.email_confirmed_at) {
+      if (event === 'SIGNED_IN' && session?.user?.email_confirmed_at && !session.user.is_anonymous) {
         const isNewConfirmation = !localStorage.getItem('hasLoggedInBefore_' + session.user.id);
         if (isNewConfirmation) {
           localStorage.setItem('hasLoggedInBefore_' + session.user.id, 'true');
