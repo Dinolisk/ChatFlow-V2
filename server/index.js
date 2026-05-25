@@ -10,6 +10,7 @@ const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 const allowedOrigins = [
   'http://localhost:5173',
   'https://chatflowv2.netlify.app',
+  'https://chatflow-v2.onrender.com',
 ];
 
 app.use(cors({ origin: allowedOrigins }));
