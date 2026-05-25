@@ -102,18 +102,18 @@ body {
   flex: 1;
   min-height: 0;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-  padding: 4rem 1rem 2rem;
+  padding: 1.5rem 1rem 2rem;
   padding-bottom: max(2rem, env(safe-area-inset-bottom, 0px));
   background: radial-gradient(ellipse at 50% 0%, rgba(99,102,241,0.12) 0%, transparent 65%), var(--bg);
 }
 
 @media (min-width: 768px) {
   .page-container {
-    padding: 6rem 1rem 2rem;
+    padding: 2rem 1rem 2rem;
   }
 }
 
