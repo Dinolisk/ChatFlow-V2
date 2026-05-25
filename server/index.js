@@ -13,7 +13,11 @@ const allowedOrigins = [
   'https://chatflow-v2.onrender.com',
 ];
 
-app.use(cors({ origin: allowedOrigins }));
+app.use(cors({
+  origin: allowedOrigins,
+  methods: ['GET', 'POST'],
+  credentials: true,
+}));
 app.use(express.json());
 
 app.post('/api/chat', async (req, res) => {
