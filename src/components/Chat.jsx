@@ -37,7 +37,7 @@ const Chat = () => {
   const [avatar, setAvatar] = useState('');
   const [viewerId, setViewerId] = useState(null);
   const [patrikTyping, setPatrikTyping] = useState(false);
-  const bottomRef = useRef(null);
+  const messagesRef = useRef(null);
 
   useEffect(() => {
     const run = async () => {
@@ -65,8 +65,10 @@ const Chat = () => {
   }, []);
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
+    const container = messagesRef.current;
+    if (!container) return;
+    container.scrollTop = container.scrollHeight;
+  }, [messages, patrikTyping]);
 
   const handleSendMessage = async (e) => {
     e.preventDefault();
@@ -133,7 +135,7 @@ const Chat = () => {
     <div className="chat-page">
 
 
-      <div className="messages-container">
+      <div className="messages-container" ref={messagesRef}>
         {messages.map((message, index) => {
           const isOwn = message.user_id === viewerId;
           const isPatrik = message.username === 'Patrik';
@@ -167,7 +169,6 @@ const Chat = () => {
             </div>
           </div>
         )}
-        <div ref={bottomRef} />
       </div>
 
       <form className="chat-form" onSubmit={handleSendMessage}>

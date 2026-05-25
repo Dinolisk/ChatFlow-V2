@@ -2,11 +2,13 @@
 .chat-page {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 60px); /* full viewport minus header */
-  max-width: 780px;
+  flex: 1;
+  min-height: 0;
   width: 100%;
+  max-width: 780px;
   margin: 0 auto;
   padding: 0 1rem;
+  overflow: hidden;
 }
 
 /* ─── Top bar (greeting + avatar) ───────────────────────── */
@@ -177,9 +179,11 @@
   display: flex;
   align-items: center;
   gap: 0.6rem;
-  padding: 0.85rem 0.25rem 1rem;
+  padding: 0.85rem 0.25rem;
+  padding-bottom: max(1rem, env(safe-area-inset-bottom, 0px));
   border-top: 1px solid var(--border);
   flex-shrink: 0;
+  background: var(--bg);
 }
 
 .chat-input {

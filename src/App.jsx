@@ -50,25 +50,27 @@ function App() {
       <div className="App">
         <Header isAuthenticated={isAuthenticated} handleLogout={handleLogout} />
 
-        <Routes>
-          <Route path="/" element={<Home />} />
+        <main className="app-main">
+          <Routes>
+            <Route path="/" element={<Home />} />
 
-          <Route
-            path="/register"
-            element={!isAuthenticated ? <Register /> : <Navigate to="/chat" />}
-          />
-          <Route
-            path="/login"
-            element={!isAuthenticated ? <Login setIsAuthenticated={setIsAuthenticated} /> : <Navigate to="/chat" />}
-          />
+            <Route
+              path="/register"
+              element={!isAuthenticated ? <Register /> : <Navigate to="/chat" />}
+            />
+            <Route
+              path="/login"
+              element={!isAuthenticated ? <Login setIsAuthenticated={setIsAuthenticated} /> : <Navigate to="/chat" />}
+            />
 
-          <Route
-            path="/chat"
-            element={isAuthenticated ? <Chat /> : <Navigate to="/login" />}
-          />
+            <Route
+              path="/chat"
+              element={isAuthenticated ? <Chat /> : <Navigate to="/login" />}
+            />
 
-          <Route path="*" element={<Navigate to="/" />} />
-        </Routes>
+            <Route path="*" element={<Navigate to="/" />} />
+          </Routes>
+        </main>
       </div>
     </Router>
   );
