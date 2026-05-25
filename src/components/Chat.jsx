@@ -8,8 +8,10 @@ function userAvatar(userId) {
   return `https://api.dicebear.com/9.x/thumbs/svg?seed=${userId}&backgroundColor=6366f1`;
 }
 
+const API_BASE = import.meta.env.VITE_API_URL ?? '';
+
 async function getAIReply(userMessage) {
-  const response = await fetch('/api/chat', {
+  const response = await fetch(`${API_BASE}/api/chat`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ message: userMessage }),
