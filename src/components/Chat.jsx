@@ -10,11 +10,11 @@ function userAvatar(userId) {
 
 const API_BASE = (import.meta.env.VITE_API_URL ?? '').replace(/\/$/, '');
 
-async function getAIReply(userMessage) {
+async function getAIReply(userMessage, history) {
   const response = await fetch(`${API_BASE}/api/chat`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ message: userMessage }),
+    body: JSON.stringify({ message: userMessage, history }),
   });
 
   if (response.status === 429) throw new Error('rate_limit');
@@ -90,9 +90,18 @@ const Chat = () => {
     setMessages((prev) => [...prev, userMsg]);
     setNewMessage('');
 
+    const MAX_HISTORY = 6;
+    const history = messages
+      .filter((m) => m.id !== 'welcome')
+      .map((m) => ({
+        role: m.username === 'Patrik' ? 'assistant' : 'user',
+        content: m.text,
+      }))
+      .slice(-MAX_HISTORY);
+
     setPatrikTyping(true);
     try {
-      const replyText = await getAIReply(sanitized);
+      const replyText = await getAIReply(sanitized, history);
       setMessages((prev) => [...prev, {
         id: `patrik-${Date.now()}`,
         text: replyText,

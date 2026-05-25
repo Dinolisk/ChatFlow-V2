@@ -21,11 +21,16 @@ app.use(cors({
 app.use(express.json());
 
 app.post('/api/chat', async (req, res) => {
-  const { message } = req.body;
+  const { message, history = [] } = req.body;
 
   if (!message || typeof message !== 'string') {
     return res.status(400).json({ error: 'Fältet "message" saknas eller är ogiltigt.' });
   }
+
+  const MAX_HISTORY = 6;
+  const trimmedHistory = history
+    .filter((m) => m.role === 'user' || m.role === 'assistant')
+    .slice(-MAX_HISTORY);
 
   try {
     const completion = await openai.chat.completions.create({
@@ -36,6 +41,7 @@ app.post('/api/chat', async (req, res) => {
           content:
             'Du är en vänlig chattbot som heter Patrik. Svara kort och avslappnat på svenska, max 2 meningar.',
         },
+        ...trimmedHistory,
         { role: 'user', content: message },
       ],
       max_tokens: 150,
