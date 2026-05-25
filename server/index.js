@@ -20,7 +20,8 @@ app.use(cors({
 }));
 app.use(express.json());
 
-const MAX_HISTORY = 3;
+const MAX_HISTORY = parseInt(process.env.HISTORY_LIMIT, 10) || 3;
+const MAX_TOKENS = parseInt(process.env.MAX_TOKENS, 10) || 150;
 const MAX_MESSAGE_LENGTH = 500;
 
 app.post('/api/chat', async (req, res) => {
@@ -52,7 +53,7 @@ app.post('/api/chat', async (req, res) => {
         ...trimmedHistory,
         { role: 'user', content: message },
       ],
-      max_tokens: 150,
+      max_tokens: MAX_TOKENS,
     });
 
     const reply = completion.choices[0]?.message?.content?.trim();
