@@ -27,7 +27,7 @@ app.post('/api/chat', async (req, res) => {
     return res.status(400).json({ error: 'Fältet "message" saknas eller är ogiltigt.' });
   }
 
-  const MAX_HISTORY = 6;
+  const MAX_HISTORY = 3;
   const trimmedHistory = history
     .filter((m) => m.role === 'user' || m.role === 'assistant')
     .slice(-MAX_HISTORY);

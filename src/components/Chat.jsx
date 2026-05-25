@@ -90,7 +90,7 @@ const Chat = () => {
     setMessages((prev) => [...prev, userMsg]);
     setNewMessage('');
 
-    const MAX_HISTORY = 6;
+    const MAX_HISTORY = 3;
     const history = messages
       .filter((m) => m.id !== 'welcome')
       .map((m) => ({
