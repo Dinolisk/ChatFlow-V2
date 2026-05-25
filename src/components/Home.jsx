@@ -13,8 +13,8 @@ function Home() {
     try {
       await signInAsGuest();
       navigate('/chat');
-    } catch {
-      setGuestError('Kunde inte starta gästläge. Skapa ett konto eller logga in.');
+    } catch (err) {
+      setGuestError(err.message || 'Kunde inte starta gästläge. Skapa ett konto eller logga in.');
     } finally {
       setGuestLoading(false);
     }

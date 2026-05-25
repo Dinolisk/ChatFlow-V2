@@ -61,8 +61,8 @@ export default function Login({ setIsAuthenticated }) {
       await signInAsGuest();
       setIsAuthenticated(true);
       navigate('/chat');
-    } catch {
-      setError('Kunde inte starta gästläge just nu.');
+    } catch (err) {
+      setError(err.message || 'Kunde inte starta gästläge just nu.');
     } finally {
       setGuestLoading(false);
     }

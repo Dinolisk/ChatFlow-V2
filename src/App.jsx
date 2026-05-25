@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import Register from './components/Register';
 import Login from './components/Login';
 import Chat from './components/Chat';
@@ -7,6 +7,39 @@ import Home from './components/Home';
 import Header from './components/Header';
 import { supabase } from './supabaseClient';
 import './global.css';
+
+function AppShell({ isAuthenticated, setIsAuthenticated, handleLogout }) {
+  const location = useLocation();
+  const isChat = location.pathname === '/chat';
+
+  return (
+    <div className="App">
+      <Header isAuthenticated={isAuthenticated} handleLogout={handleLogout} />
+
+      <main className={`app-main${isChat ? '' : ' app-main--scroll'}`}>
+        <Routes>
+          <Route path="/" element={<Home />} />
+
+          <Route
+            path="/register"
+            element={!isAuthenticated ? <Register /> : <Navigate to="/chat" />}
+          />
+          <Route
+            path="/login"
+            element={!isAuthenticated ? <Login setIsAuthenticated={setIsAuthenticated} /> : <Navigate to="/chat" />}
+          />
+
+          <Route
+            path="/chat"
+            element={isAuthenticated ? <Chat /> : <Navigate to="/login" />}
+          />
+
+          <Route path="*" element={<Navigate to="/" />} />
+        </Routes>
+      </main>
+    </div>
+  );
+}
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -47,31 +80,11 @@ function App() {
 
   return (
     <Router>
-      <div className="App">
-        <Header isAuthenticated={isAuthenticated} handleLogout={handleLogout} />
-
-        <main className="app-main">
-          <Routes>
-            <Route path="/" element={<Home />} />
-
-            <Route
-              path="/register"
-              element={!isAuthenticated ? <Register /> : <Navigate to="/chat" />}
-            />
-            <Route
-              path="/login"
-              element={!isAuthenticated ? <Login setIsAuthenticated={setIsAuthenticated} /> : <Navigate to="/chat" />}
-            />
-
-            <Route
-              path="/chat"
-              element={isAuthenticated ? <Chat /> : <Navigate to="/login" />}
-            />
-
-            <Route path="*" element={<Navigate to="/" />} />
-          </Routes>
-        </main>
-      </div>
+      <AppShell
+        isAuthenticated={isAuthenticated}
+        setIsAuthenticated={setIsAuthenticated}
+        handleLogout={handleLogout}
+      />
     </Router>
   );
 }

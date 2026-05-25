@@ -7,7 +7,12 @@ export async function signInAsGuest() {
     },
   });
 
-  if (error) throw error;
+  if (error) {
+    if (error.status === 422 || error.message?.toLowerCase().includes('anonymous')) {
+      throw new Error('Anonym inloggning är avstängd i Supabase. Aktivera den under Authentication → Sign In / Providers.');
+    }
+    throw error;
+  }
 
   const user = data.user;
   localStorage.setItem('username', user?.user_metadata?.username || 'Gäst');
