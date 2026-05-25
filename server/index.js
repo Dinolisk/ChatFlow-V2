@@ -20,6 +20,9 @@ app.use(cors({
 }));
 app.use(express.json());
 
+const MAX_HISTORY = 3;
+const MAX_MESSAGE_LENGTH = 500;
+
 app.post('/api/chat', async (req, res) => {
   const { message, history = [] } = req.body;
 
@@ -27,7 +30,12 @@ app.post('/api/chat', async (req, res) => {
     return res.status(400).json({ error: 'Fältet "message" saknas eller är ogiltigt.' });
   }
 
-  const MAX_HISTORY = 3;
+  if (message.length > MAX_MESSAGE_LENGTH) {
+    return res.status(400).json({ error: 'Meddelandet är för långt (max 500 tecken).' });
+  }
+
+  const today = new Date().toLocaleDateString('sv-SE');
+
   const trimmedHistory = history
     .filter((m) => m.role === 'user' || m.role === 'assistant')
     .slice(-MAX_HISTORY);
@@ -39,7 +47,7 @@ app.post('/api/chat', async (req, res) => {
         {
           role: 'system',
           content:
-            'Du är en vänlig chattbot som heter Patrik. Svara kort och avslappnat på svenska, max 2 meningar.',
+            `Du är en vänlig chattbot som heter Patrik. Svara kort och avslappnat på svenska, max 2 meningar. Dagens datum är ${today}.`,
         },
         ...trimmedHistory,
         { role: 'user', content: message },
