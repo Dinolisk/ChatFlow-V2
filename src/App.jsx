@@ -75,7 +75,7 @@ function App() {
     localStorage.removeItem('userId');
     localStorage.removeItem('avatar');
     setIsAuthenticated(false);
-    window.location.href = '/login';
+    window.location.href = '/';
   };
 
   return (
